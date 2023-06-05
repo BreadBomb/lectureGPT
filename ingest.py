@@ -31,10 +31,12 @@ def load_documents(source_dir: str) -> List[Document]:
 @click.option('--device_type', default='gpu', help='device to run on, select gpu or cpu')
 def main(device_type, ):
     # load the instructorEmbeddings
-    if device_type in ['cpu', 'CPU']:
+    if str.lower(device_type) == 'cpu':
         device='cpu'
-    else:
+    elif str.lower(device_type) == 'gpu':
         device='cuda'
+    else:
+        device='mps'
 
     # Load documents and split in chunks
     print(f"Loading documents from {SOURCE_DIRECTORY}")

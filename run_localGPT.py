@@ -1,3 +1,6 @@
+from langchain import LlamaCpp
+from langchain.callbacks.manager import CallbackManager
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chains import RetrievalQA
 # from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.vectorstores import Chroma
@@ -15,27 +18,15 @@ def load_model():
     If you are running this for the first time, it will download a model for you. 
     subsequent runs will use the model from the disk. 
     '''
-    model_id = "TheBloke/vicuna-7B-1.1-HF"
-    tokenizer = LlamaTokenizer.from_pretrained(model_id)
+    callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
 
-    model = LlamaForCausalLM.from_pretrained(model_id,
-                                            #   load_in_8bit=True, # set these options if your GPU supports them!
-                                            #   device_map=1#'auto',
-                                            #   torch_dtype=torch.float16,
-                                            #   low_cpu_mem_usage=True
-                                              )
-
-    pipe = pipeline(
-        "text-generation",
-        model=model, 
-        tokenizer=tokenizer, 
-        max_length=2048,
-        temperature=0,
-        top_p=0.95,
-        repetition_penalty=1.15
+    local_llm = LlamaCpp(
+        model_path="./model/llama-7b.ggmlv3.q4_0.bin",
+        callback_manager=callback_manager,
+        n_ctx=2048,
+        use_mlock=True,
+        verbose=True
     )
-
-    local_llm = HuggingFacePipeline(pipeline=pipe)
 
     return local_llm
 
@@ -43,10 +34,12 @@ def load_model():
 @click.option('--device_type', default='gpu', help='device to run on, select gpu or cpu')
 def main(device_type, ):
     # load the instructorEmbeddings
-    if device_type in ['cpu', 'CPU']:
+    if str.lower(device_type) == 'cpu':
         device='cpu'
-    else:
+    elif str.lower(device_type) == 'gpu':
         device='cuda'
+    else:
+        device='mps'
 
     print(f"Running on: {device}")
         

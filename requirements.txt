@@ -1,6 +1,6 @@
 langchain==0.0.166
 chromadb==0.3.22
-llama-cpp-python==0.1.48
+llama-cpp-python==0.1.57
 urllib3==1.26.6
 pdfminer.six==20221105
 InstructorEmbedding
