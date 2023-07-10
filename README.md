@@ -42,7 +42,7 @@ Pretrained models are downloaded and locally cached at: ```~/.cache/huggingface/
 In order to ask a question, run a command like:
 
 ```shell
-python run_localGPT.py
+python main.py
 ```
 
 And wait for the script to require your input. 
@@ -67,7 +67,7 @@ python ingest.py --device_type cpu
 In order to ask a question, run a command like:
 
 ```shell
-python run_localGPT.py --device_type cpu
+python main.py --device_type cpu
 ```
 
 # How does it work?

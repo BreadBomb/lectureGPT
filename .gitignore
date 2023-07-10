@@ -1,3 +1,7 @@
 DB/
 .idea/
 /model/
+DB_llama/
+DB_openai/
+tmp/
+venv/
